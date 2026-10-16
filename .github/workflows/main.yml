@@ -7,13 +7,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    container:
+      image: barichello/godot-ci:4.4.1
+
     steps:
-      - name: Download project
+      - name: Download repository
         uses: actions/checkout@v4
 
-      - name: Build APK
+      - name: Extract game project
         run: |
-          docker run --rm \
-            -v "$PWD:/project" \
-            barichello/godot-ci:4.4.1 \
-            bash -lc "cd /project && mkdir -p build && godot --headless --editor --path . --quit"
+          unzip -o NeonWebHero-Godot-Android-Project.zip -d .
+          cd NeonWebHeroProject
+          mkdir -p build
+
+      - name: Check project
+        run: |
+          cd NeonWebHeroProject
+          godot --headless --editor --path . --quit
+
+      - name: Upload project files
+        uses: actions/upload-artifact@v4
+        with:
+          name: Neon-Web-Hero-Project
+          path: NeonWebHeroProject/
