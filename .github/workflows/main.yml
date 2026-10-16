@@ -1,0 +1,19 @@
+
+name: Build Neon Web Hero APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download project
+        uses: actions/checkout@v4
+
+      - name: Build APK
+        run: |
+          docker run --rm \
+            -v "$PWD:/project" \
+            barichello/godot-ci:4.4.1 \
+            bash -lc "cd /project && mkdir -p build && godot --headless --editor --path . --quit"
